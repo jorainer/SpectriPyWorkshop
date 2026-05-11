@@ -1,0 +1,46 @@
+Package: SpectriPyWorkshop
+Title: Criss-crossing R and Python for Powerful MS Data Analysis Workflows
+Version: 0.99.0
+Authors@R:
+     person(given = "Johannes", family = "Rainer",
+            email = "Johannes.Rainer@eurac.edu",
+            role = c("aut", "cre"),
+            comment = c(ORCID = "0000-0002-6977-7147"))
+            )
+Description:
+    This workshop explains how R and Python can be combined in a single
+    interactive workflow through the SpectriPy package. The SpectriPy package
+    takes care of translating the MS data structures from the two programming
+    languages enabling the use of the functions from both in their respective
+    native environments.
+License: Artistic-2.0
+Encoding: UTF-8
+LazyData: false
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.6),
+    SpectriPy
+Suggests:
+    MsDataHub,
+    rmarkdown,
+    quarto,
+    reticulate,
+    MsExperiment,
+    Spectra,
+    xcms,
+    BiocStyle,
+    curl,
+    MsBackendMgf,
+    matrixStats,
+    pheatmap,
+    AnnotationHub,
+    CompoundDb
+URL: https://github.com/jorainer/SpectriPyWorkshop/, https://jorainer.github.io/SpectriPyWorkshop/
+BugReports: https://github.com/jorainer/SpectriPyWorkshop/issues/new
+BiocType: Workflow
+RoxygenNote: 7.3.3
+VignetteBuilder: quarto, knitr
+SystemRequirements:
+    pandoc,
+    python (>= 3.12),
+    quarto
