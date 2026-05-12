@@ -11,7 +11,7 @@ WORKDIR /home/rstudio
 COPY --chown=rstudio:rstudio --exclude=./scripts/* . /home/rstudio/
 
 ## Global installation of required packages
-RUN Rscript -e "BiocManager::install(c('mzR', 'MsDataHub', 'BiocStyle', 'Spectra') , ask = FALSE, dependencies = c('Depends', 'Imports'), build_vignettes = FALSE)"
+RUN Rscript -e "BiocManager::install(c('mzR', 'MsDataHub', 'BiocStyle', 'Spectra', 'MsExperiment', 'MsBackendMgf', 'xcms') , ask = FALSE, dependencies = c('Depends', 'Imports'), build_vignettes = FALSE)"
 
 ## Install keyring package from github using pak
 RUN Rscript -e "install.packages('pak');pak::pak('r-lib/keyring', ask = FALSE)"
