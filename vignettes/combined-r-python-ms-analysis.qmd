@@ -1,0 +1,685 @@
+---
+title: "SpectriPy: Criss-Crossing R and Python for Powerful Mass Spectrometry Data Analysis Workflows"
+format: html
+author: "Johannes Rainer"
+bibliography: references.bib
+vignette: >
+  %\VignetteIndexEntry{SpectriPy: Criss-Crossing R and Python for Powerful Mass Spectrometry Data Analysis Workflows}
+  %\VignetteKeywords{Mass Spectrometry, MS, MSMS, Metabolomics, Infrastructure, Quantitative}
+  %\VignettePackage{SpectriPyWorkshop}
+  %\VignetteEngine{quarto::html}
+  %\VignetteDepends{SpectriPy,pander,reticulate,Spectra,MsExperiment,xcms,mzR,MsDataHub,pheatmap,matrixStats,BiocStyle}
+---
+
+# Outline
+
+- :dart: show how R and Python MS data analysis methods can be combined
+  in a single (interactive) workflow.
+  
+- Parts of the analysis are performed in R, parts in Python, with the MS data
+  being shared between them.
+  
+- :fork_and_knife: **Methods**:
+  - Quarto document
+  - R packages: *SpectriPy* [@graeve_spectripy_2025], *Spectra*, *xcms*
+    [@louail_xcms_2025]
+  - Python libraries: *matchms* [@huber_matchms_2020]
+  
+- :twisted_rightwards_arrows: combine R and Python to:
+  - perform chromatographic peak detection on an untargeted LC-MS/MS data file
+  - extract and process MS2 spectra for detected chromatographic peaks
+  - download public reference MS2 data and process them
+  - calculate similarity between experimental and reference MS2 spectra for a
+    tentative annotation of the detected chromatographic peaks
+
+```{r}
+library(BiocStyle)
+```
+
+# Introduction to LC-MS/MS data
+
+- Explain what LC-MS data is...
+- Explain LC-MS/MS...
+- Explain briefly the concept of annotation through MS2 spectra matching...
+
+# Criss-crossing R and Python for powerful MS data analysis workflows
+
+## Data import
+
+Load key R packages for the preprocessing of LC-MS data.
+
+```{r}
+#' R session:
+
+library(MsExperiment)
+library(Spectra)
+library(xcms)
+library(MsDataHub)
+```
+
+**Data** (provided through *MsDataHub*): 
+- LC-MS/MS measurement of a pesticide mixture.
+- MS2 data generated with a data dependent acquisition (DDA) strategy.
+
+```{r}
+#' R session:
+
+dda_file <- MsDataHub::PestMix1_DDA.mzML()
+dda_data <- readMsExperiment(dda_file)
+```
+
+::: {.callout-note appearance = "minimal"}
+For more information on general MS data handling and exploration see also the
+respective tutorials in the :woman_astronaut: [Metabonaut
+resource](https://rformassspectrometry.github.io/Metabonaut/)
+:::
+
+For initial data inspection we create below the *total ion chromatogram* (TIC)
+of the data and indicate for which (precursor) ions MS2 spectra were acquired.
+
+```{r}
+#| fig-cap: "Total ion chromatogram (left) and precursor *m/z* of acquired MS2 spectra (right)."
+#| label: fig-tic
+#| fig-width: 7
+#| fig-height: 7
+#| layout-ncol: 2
+#' R session:
+
+chromatogram(dda_data) |>
+    plot()
+grid()
+plotPrecursorIons(dda_data)
+grid()
+```
+
+## MS1 data preprocessing
+
+Next we process the MS1 data to identify and quantify chromatographic peaks
+using the `r Biocpkg("xcms")` package [@louail_xcms_2025].
+
+::: {.callout-note appearance = "minimal"}
+For more information on peak detection and parameter settings see
+:woman_astronaut: [Metabonaut
+resource](https://rformassspectrometry.github.io/Metabonaut/)
+:::
+
+```{r}
+#' R session:
+
+cwp <- CentWaveParam(snthresh = 5, noise = 100, ppm = 10,
+                     peakwidth = c(3, 30))
+dda_data <- findChromPeaks(dda_data, param = cwp, msLevel = 1L)
+```
+
+Identify and extract MS2 spectra measured for all (precursor) ions for each MS1 
+chromatographic peak.
+
+```{r}
+#' R session:
+
+#' Identify and extract MS2 spectra for each chromatographic peak
+dda_ms2 <- chromPeakSpectra(dda_data)
+dda_ms2
+```
+
+:mag_right: Visualize the results:
+
+- plot EIC of first chromatographic peak
+- indicate the MS2 spectra measured for that peak (if any)
+- plot the associated MS2 spectra
+
+```{r}
+#| label: fig-example-eic
+#| fig-cap: "Example extracted ion chromatogram (left) and associated MS2 spectrum (right)."
+#| fig-width: 14
+#| fig-height: 7
+#' R session:
+ 
+pid <- dda_ms2$chrom_peak_id[1L]
+chrs <- chromPeakChromatograms(
+    dda_data, peaks = pid, expandRt = 4)
+
+par(mfrow = c(1, 2))
+#' Plot the EIC
+plot(chrs)
+grid()
+#' Subset MS2 spectra for the present chromatographic peak
+s <- dda_ms2[dda_ms2$chrom_peak_id == pid]
+abline(v = s$rtime, col = "#ff000080", lty = 3, lwd = 2)
+plotSpectra(s[1L], lwd = 2)
+grid()
+```
+
+Each chromatographic peak represents the signal for an ion of a molecule
+(pesticide?) present in the sample. In untargeted metabolomics we don't know the
+identity of these molecules (yet).
+
+## MS2-based annotation of MS1 signals
+
+MS2 (fragment) spectra generated from ions collected for MS1 signals can provide
+information on the structure of the measured compound. In MS2-based annotation
+workflows such *experimental* MS2 spectra are compared against *reference*
+spectra, i.e., MS2 spectra generated from ions of known origin.
+
+### Clean and process chromatographic peaks'  MS2 spectra
+
+- :broom: Clean MS2 data:
+  - remove peaks with an intensity below 5% of the maximum peak intensity
+  - *reduce* spectra: for peaks with similar *m/z* value (difference < 20ppm)
+    keep only the peak with the higher intensity
+  - remove the precursor peak from the spectra
+  - scale peak intensities per spectrum such that their intensities sum up to 1
+  - keep only spectra with at least 4 fragment peaks.
+
+```{r}
+#' R session:
+
+#' filter function to remove peaks with an intensity < 5% of max intensity
+low_int <- function(x, ...) {
+    x > max(x, na.rm = TRUE) * 0.05
+}
+
+#' Filter peaks
+dda_ms2 <- filterIntensity(dda_ms2, intensity = low_int) |>
+    reduceSpectra(ppm = 20) |>
+    filterPrecursorPeaks(ppm = 20) |>
+    scalePeaks()
+
+#' Keep spectra with at least 4 peaks
+dda_ms2 <- dda_ms2[lengths(dda_ms2) > 3]
+```
+
+```{r}
+#| fig-cap: "Example MS2 spectra after cleaning."
+
+#' R session:
+plotSpectra(dda_ms2[1:4], lwd = 2)
+```
+
+### Load reference MS2 data
+
+- Download and import public reference MS2 spectra: GNPS pesticide data
+
+```{r}
+#' R session:
+
+url <- file.path("https://external.gnps2.org/gnpslibrary/",
+                 "GNPS-COLLECTIONS-PESTICIDES-POSITIVE.mgf")
+
+library(curl)
+pest_mgf <- basename(url)
+if (!file.exists(pest_mgf))
+    curl_download(url, destfile = pest_mgf)
+
+library(MsBackendMgf)
+pest_ms2 <- Spectra(pest_mgf, source = MsBackendMgf())
+```
+
+Visualize example reference spectra.
+
+```{r}
+#' fig-cap: "Example reference MS2 spectra."
+
+#' R session:
+
+plotSpectra(pest_ms2[1:4], lwd = 2)
+```
+
+Reference spectra need also to be processed and cleaned.
+
+```{r}
+#' R session:
+
+#' apply the same processing as for experimental spectra
+pest_ms2 <- filterIntensity(pest_ms2, intensity = low_int) |>
+    reduceSpectra(ppm = 20) |>
+    filterPrecursorPeaks(ppm = 20) |>
+    scalePeaks()
+
+pest_ms2 <- pest_ms2[lengths(pest_ms2) > 3]
+
+length(pest_ms2)
+```
+
+Rich metadata is important for annotation. The downloaded reference data set
+provides some metadata information, most of it encoded in the the spectrum's
+name:
+
+```{r}
+#' R session:
+
+spectraVariables(pest_ms2)
+pest_ms2$NAME |> head()
+```
+
+:rage3: :tired_face: metadata is not *clean* nor complete: adduct information is
+encoded in the spectrum name.
+
+That's a common problem with public, community-based, annotation resources:
+lack of strict format and reporting standard: metadata needs to be harmonized.
+
+:muscle: Python's *matchms* library provides metadata harmonization filters
+[@de_jonge_reproducible_2024]:
+- remove non-compound name parts from the name field
+- extract adduct from the name field
+- set and correct ionmode
+- check and correct the precursor's charge
+- add proper precursor m/z and parent mass values
+- fix misplaced annotations
+- fix INCHI and SMILES entries and derive InChiKeys
+
+:snake: Here *SpectriPy* comes into play: we translate the MS data to a Python
+MS data structure and apply the *matchms* filters:
+
+- define which metadata (spectra) variables to translate using
+  `spectraVariableMapping()`.
+- use `setBackend()` with a `MsBackendPy` to translate the data to Python.
+
+```{r}
+#' R session:
+
+library(SpectriPy)
+
+#' define which spectra variables to transfer to python
+map <- c(defaultSpectraVariableMapping(), NAME = "name",
+         INCHI = "inchi", SMILES = "smiles", USI = "usi",
+         SPECTRUMID = "spectrumid")
+
+#' transfer the data to Python
+pest_ms2 <- setBackend(pest_ms2, MsBackendPy(),
+                       spectraVariableMapping = map,
+                       pythonVariableName = "pest_py")
+```
+
+The `pest_ms2` is a regular `Spectra` object, only that the data is now no
+longer in R, but in Python.
+
+### Internals of the `MsBackendPy` backend
+
+- All data is in Python as a Python list of `matchms.Spectrum` objects.
+- R keeps only the reference to the Python variable name and an index.
+- Subset operations are *delayed*, only the index is subset, but not the data.
+- Data manipulation operations on a `Spectra` object are cached and added to a
+  processing queue. They are only applied in R if peaks data is accessed.
+- `MsBackendPy` supports also replacing peaks and metadata as well as adding new
+  metadata (spectra variables).
+
+```{r}
+#' R session:
+
+#' The Python variable name
+pest_ms2@backend@py_var
+```
+
+### :snake: Clean and harmonize metadata in Python
+
+We next proceed and harmonize the metadata using the respective filters from
+the *matchms* Python library.
+
+```{python}
+#' Python session:
+
+from matchms.filtering import *
+
+for i, s in enumerate(pest_py):
+    s = default_filters(s)
+    s = derive_inchi_from_smiles(s)
+    s = derive_smiles_from_inchi(s)
+    s = derive_inchikey_from_inchi(s)
+    s = derive_formula_from_smiles(s)
+    pest_py[i] = clean_adduct(s)
+
+```
+
+We gained now additional metadata (compound annotations).
+
+```{r}
+#' R session:
+
+spectraVariables(pest_ms2)
+pest_ms2$adduct |> head()
+pest_ms2$formula |> head()
+pest_ms2$compound_name |> head()
+```
+
+That's actually great! We don't need to implement that ourself but can re-use
+established functionality [@de_jonge_reproducible_2024].
+
+Note also that any changes to the data in Python affected the data in R (because
+the `MsBackendPy` only interfaces the data, but does not contain any data
+itself).
+
+### Calculate similarity between experimental and reference MS2 spectra
+
+We will now proceed and calculate spectra similarity between our experimental
+data and the reference library.
+
+```{r}
+#' R session:
+
+sim <- compareSpectra(dda_ms2, pest_ms2, ppm = 0, tolerance = 0.1)
+```
+
+A general overview of the similarity matrix, restricting to rows/columns with a
+spectra similarity score of at least 0.25 is shown below.
+
+```{r}
+#| fig-caption: "Similarities between experimental spectra (rows) and reference spectra (columns)."
+#| label: fig-sim-pheatmap
+
+#' R session:
+
+library(matrixStats)
+library(pheatmap)
+simsub <- sim[rowMaxs(sim) > 0.5, colMaxs(sim) > 0.5]
+pheatmap(simsub)
+```
+
+Only a fraction of our 108 experimental MS2 spectra could be matched to a
+reference with a similarity > 70%.
+
+```{r}
+#' R session:
+
+sum(rowMaxs(sim) > 0.7)
+```
+
+### :snake: Calculate spectral similarity in Python
+
+*matchms* provides alternative spectra similarity scores that would also account
+for *neutral lossess* hence possibly resulting in more or better matches. We
+below move the reference MS2 data also to Python.
+
+```{r}
+#' R session:
+
+#' transfer experimental MS data to Python
+map2 <- c(defaultSpectraVariableMapping(), chrom_peak_rt = "chrom_peak_rt",
+          chrom_peak_mz = "chrom_peak_mz", chrom_peak_id = "chrom_peak_id",
+          spectrumId = "spectrum_id")
+dda_ms2 <- setBackend(dda_ms2, backend = MsBackendPy(),
+                      spectraVariableMapping = map2,
+                      pythonVariableName = "dda_py")
+```
+
+We can now calculate spectra similarities between the experimental and reference
+spectra in Python.
+
+```{python}
+#' Python session:
+
+from matchms import calculate_scores
+from matchms.similarity import ModifiedCosineHungarian
+
+#' Calculate similarity scores
+scores = calculate_scores(
+    dda_py, pest_py, ModifiedCosineHungarian(tolerance = 0.1,
+                                             intensity_power = 0.5))
+sim = scores.to_array()["ModifiedCosineHungarian_score"]
+
+```
+
+Using the modified cosine similarity from *matchms* we got more hits:
+
+```{r}
+#' R session:
+
+sum(rowMaxs(py$sim) > 0.7)
+```
+
+The code below compiles the result table for this mapping.
+
+```{r}
+idx <- which(py$sim > 0.7, arr.ind = TRUE)
+res <- data.frame(rtime = dda_ms2$rtime[idx[, 1L]],
+                  chrom_peak_id = dda_ms2$chrom_peak_id[idx[, 1L]],
+                  formula = pest_ms2$formula[idx[, 2L]],
+                  name = pest_ms2$compound_name[idx[, 2L]],
+                  sim = py$sim[idx])
+res <- res[order(res$rtime), ]
+head(res)
+```
+
+### Comparing the spectra similarity scores
+
+We next compare the similarity scores calculated in R using the normalized dot
+product similarity (cosine similarity) with those from Python's *modified
+cosine* similarity from the *matchms* library.
+
+```{r}
+#| fig-cap: "Comparison of normalized dot product (x-axis) and modified cosine (y-axis) similarity scores."
+#| label: fig-comparison-simscore
+#' R session:
+
+psim <- py$sim
+plot(as.vector(sim), as.vector(psim), pch = 21, col = "#00000080",
+     bg = "#00000040", xlab = "normalized dot product",
+     ylab = "modified cosine")
+grid()
+```
+
+- The modified cosine similarity yields higher scores than the normalized dot
+  product (*regular* cosine similarity).
+- The modified cosine considers in addition neutral loss matches between the
+  compared spectra.
+
+:mag_right: inspect spectra with high modified cosine scores, but low normalized
+dot product similarity. By subtracting the precursor *m/z* from each fragment
+peak's *m/z* we generate *neutral loss* spectra.
+
+```{r}
+#| fig-cap: "Mirror plot for spectra with high modified cosine similarity, but low normalized dot product. Original data (left) and neutral loss spectra (right)."
+#| fig-width: 7
+#| fig-height: 7
+#| layout-ncol: 2
+#| label: fig-mirror-1
+
+#' R session:
+
+#' indentify matches with the largest difference 
+sim_diff <- psim - sim
+idx <- which(sim_diff > 0.7, arr.ind = TRUE)
+
+#' get the respective spectra
+a <- dda_ms2[idx[1, 1]]
+b <- pest_ms2[idx[1, 2]]
+
+plotSpectraMirror(a, b, ppm = 0, tolerance = 0.1)
+grid()
+
+#' calculate neutral loss version of the spectra
+a_n <- shiftPeaks(a, direction = "left", offset = "precursorMz")
+b_n <- shiftPeaks(b, direction = "left", offset = "precursorMz")
+
+plotSpectraMirror(a_n, b_n, ppm = 0, tolerance = 0.1)
+grid()
+```
+
+Only 2 fragment peaks were matching between the *original* spectra, while an
+additional 3 fragments match if the spectra's precursor *m/z* is subtracted from
+the fragment peak's *m/z*.
+
+::: {.callout-note appearance = "minimal"}
+The `shiftPeaks()` operation was *only* added to the processing queue of the
+`Spectra` object but not immediately applied to the data. In R, the processing
+queue is applied on-the-fly to the data when requested. In Python, any of these
+data manipulations are therefore not visible. Use `applyProcessing()` on the
+`Spectra` object to *realize* and apply data manipulation operations.
+
+:warning: before using `applyProcessing()` read the
+[`?pyspec_copy_on_replace`](https://rformassspectrometry.github.io/SpectriPy/reference/pyspec_copy_on_replace.html)
+help to avoid invalidating potentially present data copies.
+:::
+
+The difference between the spectra's precursor *m/z* is:
+
+```{r}
+a$precursorMz - b$precursorMz
+```
+
+:information_source: 1.997 matches the mass difference between the 35Cl and 37Cl
+isotopes of chlorine (Cl) that have a mass of 34.9689 and 36.9659,
+respectively. Also the abundance of both isotopes is relatively high (76% and
+24%) [ref](https://www2.chemistry.msu.edu/faculty/reusch/OrgPage/mass.htm) and
+the chemical formula of the matched compound contains chlorine:
+
+```{r}
+#' R session
+
+b$formula 
+```
+
+Summarizing, with the *matchms* modified cosine similarity we can get more hits
+for our experimental MS2 spectra. We could also use the same approach to use
+other spectra similarity scoring algorithms available in Python, such as
+spec2vec [@huber_spec2vec_2021] or ms2deepscore [@de_jonge_cross_2026].
+
+
+## Important notes
+
+The shared data model used by `MsBackendPy` has some properties and possible
+disadvantages a user (or developer) should be aware of to avoid unexpected
+behavior:
+
+- Change data in Python: will change the data also in R.
+- Subset data in R: will subset the index to the individual spectra, data in
+  Python is not changed.
+- Subset data in Python: need to re-index the data in R.
+- Multiple copies (or subsets) of the same original `Spectra` object pointing to
+  the same variable in Python: `applyProcessing()` can cause data corruption as
+  the data referred to by multiple `Spectra` is changed. See the [Replacing data
+  and ensuring data
+  consistency](https://rformassspectrometry.github.io/SpectriPy/articles/SpectriPy.html#replacing-data-and-ensuring-data-consistency)
+  section in the *SpectriPy* package vignette or `?pyspec_copy_on_replace` for
+  solutions.
+
+## Summary
+
+- Create more powerful data analysis workflows by combining functionality from R
+  packages and Python libraries.  **R advantages**:
+  - flexible MS infrastructure: large variety of supported data and file formats
+  - Bioconductor's *AnnotationHub* resource
+  - established preprocessing methodology for LC-MS data
+**Python advantages**:
+  - more advanced spectra similarity algorithms
+  - higher performance for some operations
+**Advantage of an interactive, combined R/Python workflow**:
+  - can use the original implementation of the respective analysis methods
+  - no need for re-implementation of methodology
+  - make the most of both programming languages and available
+    packages/libraries.
+
+
+# Session information
+
+```{r}
+#' R session:
+
+sessionInfo()
+```
+
+# References
+
+::: {#refs}
+:::
+
+# Appendix
+
+## Match experimental MS2 spectra against MassBank
+
+As an example how Bioconductor-managed annotation resources can be used in
+Python-based annotation workflows we next match the experimental MS2 spectra
+against *MassBank*. MassBank provides more coherent and standardized
+metadata and also defines releases which allow reproducible annotation. Also,
+MassBank annotation databases are available through Bioconductor's
+*AnnotationHub* simplifying their integration into data analysis workflows.
+
+```{r}
+#' R session:
+
+library(AnnotationHub)
+ah <- AnnotationHub()
+query(ah, "MassBank")
+
+mb <- ah[["AH119519"]]
+mb_ms2 <- Spectra(mb)
+```
+
+We next repeat the analysis matching the experimental MS2 against these. Also,
+we remove MS2 spectra for which no precursor m/z was reported.
+
+```{r}
+#' R session:
+
+#' Process and clean the MS2 spectra
+mb_ms2 <- mb_ms2 |>
+    filterIntensity(intensity = low_int) |>
+    reduceSpectra(ppm = 20) |>
+    filterPrecursorPeaks(ppm = 20) |>
+    scalePeaks()
+
+#' Remove MS2 without precursor and with less than 4 fragment peaks
+mb_ms2 <- mb_ms2[!is.na(precursorMz(mb_ms2))]
+mb_ms2 <- mb_ms2[lengths(mb_ms2) > 3]
+
+length(mb_ms2)
+```
+
+### Calculate similarity against reference spectra from MassBank  
+
+We next calculate the pairwise similarity between all experimental and reference
+spectra using the normalized dot product.
+
+```{r}
+#' R session:
+
+sim <- compareSpectra(dda_ms2, mb_ms2, ppm = 0, tolerance = 0.1)
+sum(rowMaxs(sim) > 0.7)
+```
+
+### :snake: calculate similarity against MassBank in Python
+
+We next transfer the MassBank data to Python to allow calculating similarities
+also with the *matchms* Python library. We define the available spectra
+variables we want to keep and translate to Python.
+
+```{r}
+#' R session:
+
+#' available metadata
+spectraVariables(mb_ms2)
+
+#' define which metadata to transfer
+mb_map <- c(defaultSpectraVariableMapping(), compound_id = "compound_id",
+            inchi = "inchi", smiles = "smiles", formula = "formula",
+            spectrum_id = "spectrum_id", name = "compound_name")
+
+#' store MS2 data to Python
+mb_ms2 <- setBackend(mb_ms2, MsBackendPy(),
+                     spectraVariableMapping = mb_map,
+                     pythonVariableName = "mb_py")
+```
+
+With also the MassBank data being available in Python we can proceed to
+calculate the similarity between the experimental and reference spectra.
+
+```{python}
+#' Python session
+
+#' calculate similarity scores
+scores = calculate_scores(
+    dda_py, mb_py, ModifiedCosineHungarian(tolerance = 0.1,
+                                           intensity_power = 0.5))
+sim = scores.to_array()["ModifiedCosineHungarian_score"]
+
+```
+
+More hits can be found with the modified cosine similarity.
+
+```{r}
+#' R session:
+
+psim <- py$sim
+sum(rowMaxs(psim) > 0.7)
+```
+

@@ -4,7 +4,7 @@
 
 ## :snake: Welcome to the *SpectriPy* package demo
 
-- :dart: **Aim**: show how R and Python MS data analysis methods can be combined
+- :dart: show how R and Python MS data analysis methods can be combined
   in a single (interactive) workflow.
 - :twisted_rightwards_arrows: combine R and Python code for:
   - chromatographic peak detection of an untargeted LC-MS/MS data file
@@ -34,4 +34,3 @@ Interested in contributing? Please check out the
 We follow the
 [**RforMassSpectrometry Code of Conduct**](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html#code-of-conduct)
 to maintain an inclusive and respectful community.
-

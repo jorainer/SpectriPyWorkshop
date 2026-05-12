@@ -27,3 +27,5 @@ tres.h5
 .profile
 .quarto/*
 .dockerignore
+mgf$
+vignettes/*_files/*
