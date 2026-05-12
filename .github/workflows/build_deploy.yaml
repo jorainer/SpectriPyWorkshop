@@ -43,6 +43,7 @@ jobs:
 
       - name: Install pkgdown
         run: |
+          install.packages("remotes")
           remotes::install_github("r-lib/pkgdown")
           remotes::install_github("quarto-dev/quarto-r")
         shell: Rscript {0}
