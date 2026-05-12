@@ -11,7 +11,7 @@ WORKDIR /home/rstudio
 COPY --chown=rstudio:rstudio --exclude=./scripts/* . /home/rstudio/
 
 ## Global installation of required packages
-RUN Rscript -e "BiocManager::install(c('mzR', 'MsDataHub', 'BiocStyle', 'Spectra', 'MsExperiment', 'MsBackendMgf', 'xcms') , ask = FALSE, dependencies = c('Depends', 'Imports'), build_vignettes = FALSE)"
+RUN Rscript -e "BiocManager::install(c('mzR', 'MsDataHub', 'BiocStyle') , ask = FALSE, dependencies = c('Depends', 'Imports'), build_vignettes = FALSE)"
 
 ## Install keyring package from github using pak
 RUN Rscript -e "install.packages('pak');pak::pak('r-lib/keyring', ask = FALSE)"
@@ -23,7 +23,7 @@ RUN Rscript -e "BiocManager::install('SpectriPy')"
 RUN Rscript -e "library(MsDataHub);MsDataHub::PestMix1_DDA.mzML()"
 
 ## Install the current package with vignettes
-RUN Rscript -e "devtools::install('.')"
+RUN Rscript -e "devtools::install('.', dependencies = TRUE)"
 
 ## root user needed for rstudio server properly working
 USER root
