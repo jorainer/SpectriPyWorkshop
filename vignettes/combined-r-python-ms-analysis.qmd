@@ -15,16 +15,16 @@ vignette: >
 
 - :dart: show how R and Python MS data analysis methods can be combined
   in a single (interactive) workflow.
-  
+
 - Parts of the analysis are performed in R, parts in Python, with the MS data
   being shared between them.
-  
+
 - :fork_and_knife: **Methods**:
   - Quarto document
   - R packages: *SpectriPy* [@graeve_spectripy_2025], *Spectra*, *xcms*
     [@louail_xcms_2025]
   - Python libraries: *matchms* [@huber_matchms_2020]
-  
+
 - :twisted_rightwards_arrows: combine R and Python to:
   - perform chromatographic peak detection on an untargeted LC-MS/MS data file
   - extract and process MS2 spectra for detected chromatographic peaks
@@ -38,9 +38,28 @@ library(BiocStyle)
 
 # Introduction to LC-MS/MS data
 
-- Explain what LC-MS data is...
-- Explain LC-MS/MS...
-- Explain briefly the concept of annotation through MS2 spectra matching...
+- Liquid chromatography mass spectrometry (LC-MS) is the method of choice in
+  untargeted metabolomics (or small molecule - omics).
+- Molecules are separated by LC, get ionized and then detected by MS.
+
+![*LC-MS setup*](images/LC-MS-drawing.gif){width=600}
+
+- The signal is analyzed along retention time, identifying *chromatographic
+  peaks*: signal from ions of the same molecule.
+- These are characterized by their *m/z* and retention time.
+- To improve annotation confidence, MS2 spectra are generated: fragmenting the
+  ions and recording the *m/z* of their fragments.
+
+![*CID-based fragmentation](images/MSMS.png){width=600}
+
+- Such MS2 spectra provide information on the compound's structure.
+
+![Fragment spectra](images/fragment-spectra.png){width=600}
+
+- Comparing these MS2 spectra against a reference database with MS2 spectra of
+  pure standards is used to annotate the LC-MS features.
+
+- IMAGE compare against reference
 
 # Criss-crossing R and Python for powerful MS data analysis workflows
 
@@ -57,7 +76,7 @@ library(xcms)
 library(MsDataHub)
 ```
 
-**Data** (provided through *MsDataHub*): 
+**Data** (provided through *MsDataHub*):
 - LC-MS/MS measurement of a pesticide mixture.
 - MS2 data generated with a data dependent acquisition (DDA) strategy.
 
@@ -111,7 +130,7 @@ cwp <- CentWaveParam(snthresh = 5, noise = 100, ppm = 10,
 dda_data <- findChromPeaks(dda_data, param = cwp, msLevel = 1L)
 ```
 
-Identify and extract MS2 spectra measured for all (precursor) ions for each MS1 
+Identify and extract MS2 spectra measured for all (precursor) ions for each MS1
 chromatographic peak.
 
 ```{r}
@@ -134,7 +153,7 @@ dda_ms2
 #| fig-width: 14
 #| fig-height: 7
 #' R session:
- 
+
 pid <- dda_ms2$chrom_peak_id[1L]
 chrs <- chromPeakChromatograms(
     dda_data, peaks = pid, expandRt = 4)
@@ -476,7 +495,7 @@ peak's *m/z* we generate *neutral loss* spectra.
 
 #' R session:
 
-#' indentify matches with the largest difference 
+#' indentify matches with the largest difference
 sim_diff <- psim - sim
 idx <- which(sim_diff > 0.7, arr.ind = TRUE)
 
@@ -526,7 +545,7 @@ the chemical formula of the matched compound contains chlorine:
 ```{r}
 #' R session
 
-b$formula 
+b$formula
 ```
 
 Summarizing, with the *matchms* modified cosine similarity we can get more hits
@@ -625,7 +644,7 @@ mb_ms2 <- mb_ms2[lengths(mb_ms2) > 3]
 length(mb_ms2)
 ```
 
-### Calculate similarity against reference spectra from MassBank  
+### Calculate similarity against reference spectra from MassBank
 
 We next calculate the pairwise similarity between all experimental and reference
 spectra using the normalized dot product.
@@ -682,4 +701,3 @@ More hits can be found with the modified cosine similarity.
 psim <- py$sim
 sum(rowMaxs(psim) > 0.7)
 ```
-
