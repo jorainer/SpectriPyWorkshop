@@ -35,7 +35,6 @@ Suggests:
     pheatmap,
     AnnotationHub,
     CompoundDb,
-    BiocStyle,
     knitr,
     mzR
 URL: https://github.com/jorainer/SpectriPyWorkshop/, https://jorainer.github.io/SpectriPyWorkshop/
