@@ -16,14 +16,16 @@ RUN Rscript -e "BiocManager::install(c('mzR', 'MsDataHub', 'BiocStyle', 'MsExper
 ## Install keyring package from github using pak
 RUN Rscript -e "install.packages('pak');pak::pak('r-lib/keyring', ask = FALSE)"
 
-## Install SpectriPy and caching files for rstudio user
-USER rstudio
-
-RUN Rscript -e "BiocManager::install('SpectriPy')"
-RUN Rscript -e "library(MsDataHub);MsDataHub::PestMix1_DDA.mzML()"
+## Install package dependencies
+RUN Rscript -e "pak::local_install_dev_deps(ask = FALSE)"
 
 ## Install the current package with vignettes
-RUN Rscript -e "devtools::install('.', dependencies = c('Depends', 'Imports', 'Suggests'), build_vignettes = TRUE, keep_source = FALSE)"
+RUN Rscript -e "pak::local_install()"
+
+## Install SpectriPy and caching files for rstudio user
+USER rstudio
+RUN Rscript -e "library(SpectriPy);library(MsDataHub);MsDataHub::PestMix1_DDA.mzML()"
+RUN Rscript -e "quarto::quarto_render('vignettes/combined-r-python-ms-analysis.qmd')"
 
 ## root user needed for rstudio server properly working
 USER root
