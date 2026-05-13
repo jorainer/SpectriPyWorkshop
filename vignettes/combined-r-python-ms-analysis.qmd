@@ -442,7 +442,7 @@ dda_ms2 <- setBackend(dda_ms2, backend = MsBackendPy(),
   in Python.
 
 ```{python}
-#| message: FALSE
+#| output: false
 #' Python session:
 
 from matchms import calculate_scores
@@ -721,7 +721,7 @@ With also the MassBank data being available in Python we can proceed to
 calculate the similarity between the experimental and reference spectra.
 
 ```{python}
-#| message: FALSE
+#| output: false
 #' Python session
 
 #' calculate similarity scores
