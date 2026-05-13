@@ -12,6 +12,10 @@ env:
   has_BiocCheck: 'false'
   cache-version: 'cache-v4'
 
+permissions:
+  contents: write   # only needed if building requires repository content
+  pages: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
