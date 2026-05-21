@@ -6,6 +6,7 @@
 pulls](https://img.shields.io/docker/pulls/jorainer/spectripyworkshop)[![Docker
 Image Version (latest by
 date)](https://img.shields.io/docker/v/jorainer/spectripyworkshop?label=docker%20image)](https://hub.docker.com/repository/docker/jorainer/spectripyworkshop)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20326951.svg)](https://doi.org/10.5281/zenodo.20326951)
 
 ## 🐍 Welcome to the *SpectriPy* package demo
 

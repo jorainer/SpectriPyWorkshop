@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/jorainer/SpectriPyWorkshop/blob/main/DESCRIPTION)
 
 Rainer J (2026). *SpectriPyWorkshop: Criss-crossing R and Python for
-Powerful MS Data Analysis Workflows*. R package version 0.99.0,
+Powerful MS Data Analysis Workflows*. R package version 1.0.0,
 <https://github.com/jorainer/SpectriPyWorkshop/>.
 
     @Manual{,
       title = {SpectriPyWorkshop: Criss-crossing R and Python for Powerful MS Data Analysis Workflows},
       author = {Johannes Rainer},
       year = {2026},
-      note = {R package version 0.99.0},
+      note = {R package version 1.0.0},
       url = {https://github.com/jorainer/SpectriPyWorkshop/},
     }
