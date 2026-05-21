@@ -1,6 +1,8 @@
 # SpectriPy: Criss-Crossing R and Python for Powerful Mass Spectrometry Data Analysis Workflows
 
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+![docker pulls](https://img.shields.io/docker/pulls/jorainer/spectripyworkshop)
+[![Docker Image Version (latest by date)](https://img.shields.io/docker/v/jorainer/spectripyworkshop?label=docker%20image)](https://hub.docker.com/repository/docker/jorainer/spectripyworkshop)
 
 ## :snake: Welcome to the *SpectriPy* package demo
 
@@ -11,6 +13,51 @@
   - extract and process MS2 spectra for detected chromatographic peaks
   - download and process public reference MS2 data
   - calculate similarity between experimental and reference MS2 spectra
+
+---
+
+## 🛠️ Installation
+
+### Running through docker
+
+The workflow file along with an R runtime environment including all required
+packages and the RStudio (Posit) editor are all bundled in a *docker* container.
+
+After installation, this docker container can be run on the computer and the
+code and examples from the vignettes can be evaluated within this environment
+(without the need to install any additional packages or files).
+
+-   If you don't already have, install [docker](https://www.docker.com/). Find
+    installation information [here](https://docs.docker.com/desktop/).
+-   Get the [docker
+    image](https://hub.docker.com/r/jorainer/spectripyworkshop) of this
+    tutorial e.g. from the command line with:
+
+```
+docker pull jorainer/spectripyworkshop:latest
+```
+
+-   Start the docker container, either through the Docker Desktop, or on the
+    command line with
+
+```
+docker run -e PASSWORD=bioc -p 8787:8787 jorainer/spectripyworkshop:latest
+```
+
+-   Enter [`http://localhost:8787`](http://localhost:8787) in a web browser and
+    log in with username `rstudio` and password `bioc`.
+-   In the RStudio server version: open any of the Quarto files in the
+    *vignettes* folder and evaluate the R code blocks in that document.
+
+### Running locally
+
+To install all required libraries locally:
+
+```
+install.packages("remotes")
+install.packages("BiocManager")
+BiocManager::install("jorainer/SpectriPyWorkshop", dependencies = TRUE)
+```
 
 ---
 
