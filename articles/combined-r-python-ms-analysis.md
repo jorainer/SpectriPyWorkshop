@@ -44,18 +44,18 @@
 
 ![](images/MSMS.png)
 
-CID-based fragmentation
+*CID-based fragmentation*
 
 - Such MS2 spectra provide information on the compound’s structure.
 
 ![](images/fragment-spectra.png)
 
-Fragment spectrum
+*Fragment spectrum*
 
 - Comparing these MS2 spectra against a reference database with MS2
-  spectra of pure standards is used to annotate the LC-MS features.
-
-- IMAGE compare against reference
+  spectra of pure standards can be used to annotate the LC-MS features.
+- Similarity between experimental and reference spectra can be
+  calculated using various methods.
 
 ## Criss-crossing R and Python for powerful MS data analysis workflows
 
@@ -167,10 +167,10 @@ dda_ms2
      ... 37 more variables/columns.
 
     file(s):
-    49a2a8ffcc7_7861
+    4966b4d4342_7861
     Processing:
-     Filter: select MS level(s) 2 [Wed May 13 07:42:32 2026]
-     Merge 1 Spectra into one [Wed May 13 07:42:32 2026] 
+     Filter: select MS level(s) 2 [Thu May 21 12:54:05 2026]
+     Merge 1 Spectra into one [Thu May 21 12:54:05 2026] 
 
 🔎 Visualize the results:
 
@@ -822,10 +822,10 @@ sessionInfo()
     [8] base
 
     other attached packages:
-     [1] pheatmap_1.0.13     matrixStats_1.5.0   SpectriPy_1.2.0
+     [1] pheatmap_1.0.13     matrixStats_1.5.0   SpectriPy_1.2.1
      [4] reticulate_1.46.0   MsBackendMgf_1.20.0 curl_7.1.0
      [7] MsDataHub_1.12.0    xcms_4.10.0         Spectra_1.22.0
-    [10] BiocParallel_1.46.0 S4Vectors_0.50.0    BiocGenerics_0.58.0
+    [10] BiocParallel_1.46.0 S4Vectors_0.50.1    BiocGenerics_0.58.1
     [13] generics_0.1.4      MsExperiment_1.14.0 ProtGenerics_1.44.0
     [16] BiocStyle_2.40.0
 
@@ -849,7 +849,7 @@ sessionInfo()
      [33] parallel_4.6.0              prettyunits_1.2.0
      [35] cluster_2.1.8.2             R6_2.6.1
      [37] stringi_1.8.7               RColorBrewer_1.1-3
-     [39] limma_3.68.2                GenomicRanges_1.64.0
+     [39] limma_3.68.3                GenomicRanges_1.64.0
      [41] Rcpp_1.1.1-1.1              Seqinfo_1.2.0
      [43] SummarizedExperiment_1.42.0 iterators_1.0.14
      [45] knitr_1.51                  IRanges_2.46.0
@@ -885,7 +885,7 @@ sessionInfo()
     [105] SparseArray_1.12.2          farver_2.1.2
     [107] memoise_2.0.1               htmltools_0.5.9
     [109] lifecycle_1.0.5             httr_1.4.8
-    [111] statmod_1.5.1               bit64_4.8.0
+    [111] statmod_1.5.2               bit64_4.8.2
     [113] MASS_7.3-65                
 
 ## References
@@ -937,14 +937,6 @@ analysis workflows.
 #' R session:
 
 library(AnnotationHub)
-```
-
-    Loading required package: BiocFileCache
-
-    Loading required package: dbplyr
-
-``` r
-
 ah <- AnnotationHub()
 ```
 
@@ -977,14 +969,6 @@ query(ah, "MassBank")
 
 mb <- ah[["AH119519"]]
 ```
-
-    downloading 1 resources
-
-    retrieving 1 resource
-
-    loading from cache
-
-    require("CompoundDb")
 
 ``` r
 

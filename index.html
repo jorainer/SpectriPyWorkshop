@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Criss-crossing R and Python for Powerful MS Data Analysis Workflows • SpectriPyWorkshop</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Criss-crossing R and Python for Powerful MS Data Analysis Workflows">
 <meta name="description" content="This workshop explains how R and Python can be combined in a single interactive workflow through the SpectriPy package. The SpectriPy package takes care of translating the MS data structures from the two programming languages enabling the use of the functions from both in their respective native environments.">
@@ -58,7 +58,7 @@
 <img src="logo.png" class="logo" alt=""><h1 id="spectripy-criss-crossing-r-and-python-for-powerful-mass-spectrometry-data-analysis-workflows">SpectriPy: Criss-Crossing R and Python for Powerful Mass Spectrometry Data Analysis Workflows<a class="anchor" aria-label="anchor" href="#spectripy-criss-crossing-r-and-python-for-powerful-mass-spectrometry-data-analysis-workflows"></a>
 </h1>
 </div>
-<p><a href="https://creativecommons.org/licenses/by-nc/4.0/" class="external-link"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" alt="License: CC BY-NC 4.0"></a></p>
+<p><a href="https://creativecommons.org/licenses/by-nc/4.0/" class="external-link"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" alt="License: CC BY-NC 4.0"></a> <img src="https://img.shields.io/docker/pulls/jorainer/spectripyworkshop" alt="docker pulls"><a href="https://hub.docker.com/repository/docker/jorainer/spectripyworkshop" class="external-link"><img src="https://img.shields.io/docker/v/jorainer/spectripyworkshop?label=docker%20image" alt="Docker Image Version (latest by date)"></a></p>
 <div class="section level2">
 <h2 id="snake-welcome-to-the-spectripy-package-demo">
 <span class="emoji" data-emoji="snake">🐍</span> Welcome to the <em>SpectriPy</em> package demo<a class="anchor" aria-label="anchor" href="#snake-welcome-to-the-spectripy-package-demo"></a>
@@ -77,6 +77,38 @@
 </li>
 </ul>
 <hr>
+</div>
+<div class="section level2">
+<h2 id="hammer_and_wrench-installation">🛠️ Installation<a class="anchor" aria-label="anchor" href="#hammer_and_wrench-installation"></a>
+</h2>
+<div class="section level3">
+<h3 id="running-through-docker">Running through docker<a class="anchor" aria-label="anchor" href="#running-through-docker"></a>
+</h3>
+<p>The workflow file along with an R runtime environment including all required packages and the RStudio (Posit) editor are all bundled in a <em>docker</em> container.</p>
+<p>After installation, this docker container can be run on the computer and the code and examples from the vignettes can be evaluated within this environment (without the need to install any additional packages or files).</p>
+<ul>
+<li>If you don’t already have, install <a href="https://www.docker.com/" class="external-link">docker</a>. Find installation information <a href="https://docs.docker.com/desktop/" class="external-link">here</a>.</li>
+<li>Get the <a href="https://hub.docker.com/r/jorainer/spectripyworkshop" class="external-link">docker image</a> of this tutorial e.g. from the command line with:</li>
+</ul>
+<pre><code>docker pull jorainer/spectripyworkshop:latest</code></pre>
+<ul>
+<li>Start the docker container, either through the Docker Desktop, or on the command line with</li>
+</ul>
+<pre><code>docker run -e PASSWORD=bioc -p 8787:8787 jorainer/spectripyworkshop:latest</code></pre>
+<ul>
+<li>Enter <a href="http://localhost:8787" class="external-link"><code>http://localhost:8787</code></a> in a web browser and log in with username <code>rstudio</code> and password <code>bioc</code>.</li>
+<li>In the RStudio server version: open any of the Quarto files in the <em>vignettes</em> folder and evaluate the R code blocks in that document.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="running-locally">Running locally<a class="anchor" aria-label="anchor" href="#running-locally"></a>
+</h3>
+<p>To install all required libraries locally:</p>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"jorainer/SpectriPyWorkshop"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
+<hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="pushpin-reproducibility--updates">📌 Reproducibility &amp; Updates<a class="anchor" aria-label="anchor" href="#pushpin-reproducibility--updates"></a>
