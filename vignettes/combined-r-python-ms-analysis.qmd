@@ -52,16 +52,16 @@ library(BiocStyle)
 - To improve annotation confidence, MS2 spectra are generated: fragmenting the
   ions and recording the *m/z* of their fragments.
 
-![CID-based fragmentation](images/MSMS.png){width=600}
+![*CID-based fragmentation*](images/MSMS.png){width=600}
 
 - Such MS2 spectra provide information on the compound's structure.
 
-![Fragment spectrum](images/fragment-spectra.png){width=600}
+![*Fragment spectrum*](images/fragment-spectra.png){width=600}
 
 - Comparing these MS2 spectra against a reference database with MS2 spectra of
-  pure standards is used to annotate the LC-MS features.
-
-- IMAGE compare against reference
+  pure standards can be used to annotate the LC-MS features.
+- Similarity between experimental and reference spectra can be calculated using
+  various methods.
 
 # Criss-crossing R and Python for powerful MS data analysis workflows
 
@@ -652,6 +652,7 @@ MassBank annotation databases are available through Bioconductor's
 *AnnotationHub* simplifying their integration into data analysis workflows.
 
 ```{r}
+#| message: FALSE
 #' R session:
 
 library(AnnotationHub)

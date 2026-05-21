@@ -1,2 +1,5 @@
-# *SpectriPy* Workshop 1.0
+# *SpectriPy* Workshop 0.99
 
+## Changes in version 0.99.0
+
+- Initial release.
