@@ -1,6 +1,6 @@
 Package: SpectriPyWorkshop
 Title: Criss-crossing R and Python for Powerful MS Data Analysis Workflows
-Version: 1.0.0
+Version: 1.0.1
 Authors@R:
      person(given = "Johannes", family = "Rainer",
             email = "Johannes.Rainer@eurac.edu",

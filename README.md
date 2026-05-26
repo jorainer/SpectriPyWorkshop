@@ -35,14 +35,16 @@ code and examples from the vignettes can be evaluated within this environment
     tutorial e.g. from the command line with:
 
 ```
-docker pull jorainer/spectripyworkshop:latest
+docker pull jorainer/spectripyworkshop:RELEASE_3_23
 ```
 
+-   This will download the docker container with all software/packages based on
+    Bioconductor release 3.23.
 -   Start the docker container, either through the Docker Desktop, or on the
     command line with
 
 ```
-docker run -e PASSWORD=bioc -p 8787:8787 jorainer/spectripyworkshop:latest
+docker run -e PASSWORD=bioc -p 8787:8787 jorainer/spectripyworkshop:RELEASE_3_23
 ```
 
 -   Enter [`http://localhost:8787`](http://localhost:8787) in a web browser and
