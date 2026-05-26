@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">SpectriPyWorkshop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,11 +90,12 @@
 <li>If you don’t already have, install <a href="https://www.docker.com/" class="external-link">docker</a>. Find installation information <a href="https://docs.docker.com/desktop/" class="external-link">here</a>.</li>
 <li>Get the <a href="https://hub.docker.com/r/jorainer/spectripyworkshop" class="external-link">docker image</a> of this tutorial e.g. from the command line with:</li>
 </ul>
-<pre><code>docker pull jorainer/spectripyworkshop:latest</code></pre>
+<pre><code>docker pull jorainer/spectripyworkshop:RELEASE_3_23</code></pre>
 <ul>
+<li>This will download the docker container with all software/packages based on Bioconductor release 3.23.</li>
 <li>Start the docker container, either through the Docker Desktop, or on the command line with</li>
 </ul>
-<pre><code>docker run -e PASSWORD=bioc -p 8787:8787 jorainer/spectripyworkshop:latest</code></pre>
+<pre><code>docker run -e PASSWORD=bioc -p 8787:8787 jorainer/spectripyworkshop:RELEASE_3_23</code></pre>
 <ul>
 <li>Enter <a href="http://localhost:8787" class="external-link"><code>http://localhost:8787</code></a> in a web browser and log in with username <code>rstudio</code> and password <code>bioc</code>.</li>
 <li>In the RStudio server version: open any of the Quarto files in the <em>vignettes</em> folder and evaluate the R code blocks in that document.</li>
