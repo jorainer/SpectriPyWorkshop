@@ -34,7 +34,9 @@ jobs:
           push: true
           tag_with_ref: true
           tag_with_sha: true
-          tags: jorainer/spectripyworkshop:RELEASE_3_23
+          tags:
+            - jorainer/spectripyworkshop:RELEASE_3_23
+            - jorainer/spectripyworkshop:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
