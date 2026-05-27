@@ -28,13 +28,13 @@ jobs:
       -
         name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           ref: ${{ github.event.client_payload.sha }}
           push: true
-          tags:
-            - jorainer/spectripyworkshop:RELEASE_3_23
-            - jorainer/spectripyworkshop:latest
+          tags: |
+            jorainer/spectripyworkshop:RELEASE_3_23
+            jorainer/spectripyworkshop:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
