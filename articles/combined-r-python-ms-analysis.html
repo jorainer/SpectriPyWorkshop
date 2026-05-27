@@ -71,10 +71,10 @@
     <section class="section level2"><h2 id="outline">Outline<a class="anchor" aria-label="anchor" href="#outline"></a>
 </h2>
 <ul>
-<li><p><span class="emoji" data-emoji="dart">🎯</span> show how R and Python MS data analysis methods can be combined in a single (interactive) workflow.</p></li>
+<li><p>🎯 show how R and Python MS data analysis methods can be combined in a single (interactive) workflow.</p></li>
 <li><p>Parts of the analysis are performed in R, parts in Python, with the MS data being shared between them.</p></li>
 <li>
-<p><span class="emoji" data-emoji="fork_and_knife">🍴</span> <strong>Methods</strong>:</p>
+<p>🍴 <strong>Methods</strong>:</p>
 <ul>
 <li>Quarto document</li>
 <li>R packages: <em>SpectriPy</em> <span class="citation" data-cites="graeve_spectripy_2025">(<a href="#ref-graeve_spectripy_2025" role="doc-biblioref">Graeve et al. 2025</a>)</span>, <em>Spectra</em>, <em>xcms</em> <span class="citation" data-cites="louail_xcms_2025">(<a href="#ref-louail_xcms_2025" role="doc-biblioref">Louail et al. 2025</a>)</span>
@@ -84,7 +84,7 @@
 </ul>
 </li>
 <li>
-<p><span class="emoji" data-emoji="twisted_rightwards_arrows">🔀</span> combine R and Python to:</p>
+<p>🔀 combine R and Python to:</p>
 <ul>
 <li>perform chromatographic peak detection on an untargeted LC-MS/MS data file</li>
 <li>extract and process MS2 spectra for detected chromatographic peaks</li>
@@ -147,7 +147,7 @@
 <div>
 <blockquote>
 <p><strong>Note</strong></p>
-<p><span class="emoji" data-emoji="information_source">ℹ️</span> for more information on general MS data handling and exploration see also the respective tutorials in <span class="emoji" data-emoji="woman_astronaut">👩‍🚀</span> <a href="https://rformassspectrometry.github.io/Metabonaut/" class="external-link">Metabonaut</a></p>
+<p>ℹ️ for more information on general MS data handling and exploration see also the respective tutorials in 👩‍🚀 <a href="https://rformassspectrometry.github.io/Metabonaut/" class="external-link">Metabonaut</a></p>
 </blockquote>
 </div>
 <p>For initial data inspection we create below the <em>total ion chromatogram</em> (TIC) of the data and indicate for which (precursor) ions MS2 spectra were acquired.</p>
@@ -189,7 +189,7 @@ Figure 2: Precursor <em>m/z</em> of acquired MS2 spectra.
 <div>
 <blockquote>
 <p><strong>Note</strong></p>
-<p><span class="emoji" data-emoji="information_source">ℹ️</span> For more information on peak detection and parameter settings see <span class="emoji" data-emoji="woman_astronaut">👩‍🚀</span> <a href="https://rformassspectrometry.github.io/Metabonaut/" class="external-link">Metabonaut</a></p>
+<p>ℹ️ For more information on peak detection and parameter settings see 👩‍🚀 <a href="https://rformassspectrometry.github.io/Metabonaut/" class="external-link">Metabonaut</a></p>
 </blockquote>
 </div>
 <div class="cell">
@@ -228,13 +228,13 @@ Figure 2: Precursor <em>m/z</em> of acquired MS2 spectra.
  ... 37 more variables/columns.
 
 file(s):
-4a42c8d4325_7861
+49d1f6bfcfa_7861
 Processing:
- Filter: select MS level(s) 2 [Tue May 26 14:41:29 2026]
- Merge 1 Spectra into one [Tue May 26 14:41:29 2026] </code></pre>
+ Filter: select MS level(s) 2 [Wed May 27 09:08:26 2026]
+ Merge 1 Spectra into one [Wed May 27 09:08:26 2026] </code></pre>
 </div>
 </div>
-<p><span class="emoji" data-emoji="mag_right">🔎</span> Visualize the results:</p>
+<p>🔎 visualize the results:</p>
 <ul>
 <li>plot EIC of first chromatographic peak</li>
 <li>indicate the MS2 spectra measured for that peak (if any)</li>
@@ -275,8 +275,7 @@ Figure 3: Example extracted ion chromatogram (left) and associated MS2 spectrum
 <section class="level3"><h4 id="clean-and-process-chromatographic-peaks-ms2-spectra">Clean and process chromatographic peaks’ MS2 spectra<a class="anchor" aria-label="anchor" href="#clean-and-process-chromatographic-peaks-ms2-spectra"></a>
 </h4>
 <ul>
-<li>
-<span class="emoji" data-emoji="broom">🧹</span> clean MS2 data:
+<li>🧹 clean MS2 data:
 <ul>
 <li>remove peaks with an intensity below 5% of the maximum peak intensity</li>
 <li>
@@ -415,9 +414,9 @@ Figure 5: Example reference MS2 spectra.
 [6] "Pesticide3_Linuron_C9H10Cl2N2O2_Urea, N'-(3,4-dichlorophenyl)-N-methoxy-N-methyl- M+H"                          </code></pre>
 </div>
 </div>
-<p><span class="emoji" data-emoji="tired_face">😫</span> metadata is not <em>clean</em> nor complete: adduct information is encoded in the spectrum name.</p>
+<p>😫 metadata is not <em>clean</em> nor complete: adduct information is encoded in the spectrum name.</p>
 <p>That’s a common problem with public, community-based, annotation resources: lack of strict format and reporting standard: metadata needs to be harmonized.</p>
-<p><span class="emoji" data-emoji="muscle">💪</span> Python’s <em>matchms</em> library provides metadata harmonization filters <span class="citation" data-cites="de_jonge_reproducible_2024">(<a href="#ref-de_jonge_reproducible_2024" role="doc-biblioref">Jonge et al. 2024</a>)</span> for GNPS data:</p>
+<p>💪 Python’s <em>matchms</em> library provides metadata harmonization filters <span class="citation" data-cites="de_jonge_reproducible_2024">(<a href="#ref-de_jonge_reproducible_2024" role="doc-biblioref">Jonge et al. 2024</a>)</span> for GNPS data:</p>
 <ul>
 <li>remove non-compound name parts from the name field</li>
 <li>extract adduct from the name field</li>
@@ -427,7 +426,7 @@ Figure 5: Example reference MS2 spectra.
 <li>fix misplaced annotations</li>
 <li>fix INCHI and SMILES entries and derive InChiKeys</li>
 </ul>
-<p><span class="emoji" data-emoji="snake">🐍</span> enters <em>SpectriPy</em>: we translate the MS data to a Python MS data structure to allow applying the <em>matchms</em> filters (in Python):</p>
+<p>🐍 enters <em>SpectriPy</em>: we translate the MS data to a Python MS data structure to allow applying the <em>matchms</em> filters (in Python):</p>
 <ul>
 <li>define which metadata (spectra) variables to translate using <code><a href="https://rdrr.io/pkg/Spectra/man/spectraVariableMapping.html" class="external-link">spectraVariableMapping()</a></code>.</li>
 <li>use <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">setBackend()</a></code> with a <code>MsBackendPy</code> to translate the data to Python.</li>
@@ -469,8 +468,7 @@ Figure 5: Example reference MS2 spectra.
 <pre><code>[1] "pest_py"</code></pre>
 </div>
 </div>
-</section><section class="level3"><h4 id="clean-and-harmonize-metadata-in-python">
-<span class="emoji" data-emoji="snake">🐍</span> Clean and harmonize metadata in Python<a class="anchor" aria-label="anchor" href="#clean-and-harmonize-metadata-in-python"></a>
+</section><section class="level3"><h4 id="clean-and-harmonize-metadata-in-python">🐍 Clean and harmonize metadata in Python<a class="anchor" aria-label="anchor" href="#clean-and-harmonize-metadata-in-python"></a>
 </h4>
 <p>We next proceed and harmonize the metadata using the respective filters from the <em>matchms</em> Python library.</p>
 <div class="cell">
@@ -570,8 +568,7 @@ Figure 6: Similarities between experimental spectra (rows) and reference spectr
 <pre><code>[1] 17</code></pre>
 </div>
 </div>
-</section><section class="level3"><h4 id="calculate-spectral-similarity-in-python">
-<span class="emoji" data-emoji="snake">🐍</span> Calculate spectral similarity in Python<a class="anchor" aria-label="anchor" href="#calculate-spectral-similarity-in-python"></a>
+</section><section class="level3"><h4 id="calculate-spectral-similarity-in-python">🐍 Calculate spectral similarity in Python<a class="anchor" aria-label="anchor" href="#calculate-spectral-similarity-in-python"></a>
 </h4>
 <p><em>matchms</em> provides alternative spectra similarity methods that would also account for <em>neutral lossess</em> hence possibly resulting in more or better matches. To use these we below translate also the reference MS2 data to Python.</p>
 <div class="cell">
@@ -662,8 +659,8 @@ Figure 7: Comparison of normalized dot product (x-axis) and modified cosine (y-
 </div>
 </div>
 </div>
-<p><span class="emoji" data-emoji="point_right">👉</span> The modified cosine similarity yields higher scores than the normalized dot product (<em>regular</em> cosine similarity).</p>
-<p><span class="emoji" data-emoji="mag_right">🔎</span> inspect spectra with high modified cosine scores, but low normalized dot product similarity. By subtracting the precursor <em>m/z</em> from each fragment peak’s <em>m/z</em> we generate <em>neutral loss</em> spectra.</p>
+<p>👉 the modified cosine similarity yields higher scores than the normalized dot product (<em>regular</em> cosine similarity).</p>
+<p>🔎 inspect spectra with high modified cosine scores, but low normalized dot product similarity. By subtracting the precursor <em>m/z</em> from each fragment peak’s <em>m/z</em> we generate <em>neutral loss</em> spectra.</p>
 <div class="sourceCode cell-code" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' R session:</span></span>
 <span></span>
@@ -717,8 +714,8 @@ Figure 8: Mirror plot for spectra with high modified cosine similarity, but low
 <div>
 <blockquote>
 <p><strong>Note</strong></p>
-<p><span class="emoji" data-emoji="information_source">ℹ️</span> the <code><a href="https://rdrr.io/pkg/Spectra/man/addProcessing.html" class="external-link">shiftPeaks()</a></code> operation was <em>only</em> added to the processing queue of the <code>Spectra</code> object but not immediately applied to the data. In R, the processing queue is applied on-the-fly to the data when requested. In Python, any of these data manipulations are therefore not visible. Use <code><a href="https://rdrr.io/pkg/ProtGenerics/man/processingQueue.html" class="external-link">applyProcessing()</a></code> on the <code>Spectra</code> object to <em>realize</em> and apply data manipulation operations.</p>
-<p><span class="emoji" data-emoji="warning">⚠️</span> before using <code><a href="https://rdrr.io/pkg/ProtGenerics/man/processingQueue.html" class="external-link">applyProcessing()</a></code> read the <a href="https://rformassspectrometry.github.io/SpectriPy/reference/pyspec_copy_on_replace.html" class="external-link"><code>?pyspec_copy_on_replace</code></a> help to avoid invalidating potentially present data copies.</p>
+<p>ℹ️ the <code><a href="https://rdrr.io/pkg/Spectra/man/addProcessing.html" class="external-link">shiftPeaks()</a></code> operation was <em>only</em> added to the processing queue of the <code>Spectra</code> object but not immediately applied to the data. In R, the processing queue is applied on-the-fly to the data when requested. In Python, any of these data manipulations are therefore not visible. Use <code><a href="https://rdrr.io/pkg/ProtGenerics/man/processingQueue.html" class="external-link">applyProcessing()</a></code> on the <code>Spectra</code> object to <em>realize</em> and apply data manipulation operations.</p>
+<p>⚠️ before using <code><a href="https://rdrr.io/pkg/ProtGenerics/man/processingQueue.html" class="external-link">applyProcessing()</a></code> read the <a href="https://rformassspectrometry.github.io/SpectriPy/reference/pyspec_copy_on_replace.html" class="external-link"><code>?pyspec_copy_on_replace</code></a> help to avoid invalidating potentially present data copies.</p>
 </blockquote>
 </div>
 <p>The difference between the spectra’s precursor <em>m/z</em> is:</p>
@@ -732,7 +729,7 @@ Figure 8: Mirror plot for spectra with high modified cosine similarity, but low
 <div>
 <blockquote>
 <p><strong>Note</strong></p>
-<p><span class="emoji" data-emoji="information_source">ℹ️</span> 1.997 matches the mass difference between the 35Cl and 37Cl isotopes of chlorine (Cl) that have a mass of 34.9689 and 36.9659, respectively. It is thus likely that the observed difference in <em>m/z</em> is due to presence or absence of one of the two isotopes in the compared fragments. This is further supported by the relative high percentage of natural occurrence of both isotopes (76% and 24%) <a href="https://www2.chemistry.msu.edu/faculty/reusch/OrgPage/mass.htm" class="external-link">ref</a> and the chemical formula of the matched compound, that contains chlorine:</p>
+<p>ℹ️ 1.997 matches the mass difference between the 35Cl and 37Cl isotopes of chlorine (Cl) that have a mass of 34.9689 and 36.9659, respectively. It is thus likely that the observed difference in <em>m/z</em> is due to presence or absence of one of the two isotopes in the compared fragments. This is further supported by the relative high percentage of natural occurrence of both isotopes (76% and 24%) <a href="https://www2.chemistry.msu.edu/faculty/reusch/OrgPage/mass.htm" class="external-link">ref</a> and the chemical formula of the matched compound, that contains chlorine:</p>
 </blockquote>
 </div>
 <div class="cell">
@@ -978,8 +975,7 @@ Louail, Philippine, Carl Brunius, Mar Garcia-Aloy, et al. 2025. <span>“Xcms in
 <pre><code>[1] 54</code></pre>
 </div>
 </div>
-</section><section class="level3"><h4 id="calculate-similarity-against-massbank-in-python">
-<span class="emoji" data-emoji="snake">🐍</span> calculate similarity against MassBank in Python<a class="anchor" aria-label="anchor" href="#calculate-similarity-against-massbank-in-python"></a>
+</section><section class="level3"><h4 id="calculate-similarity-against-massbank-in-python">🐍 calculate similarity against MassBank in Python<a class="anchor" aria-label="anchor" href="#calculate-similarity-against-massbank-in-python"></a>
 </h4>
 <p>We next transfer the MassBank data to Python to allow calculating similarities also with the <em>matchms</em> Python library. We define the available spectra variables we want to keep and translate to Python.</p>
 <div class="cell">

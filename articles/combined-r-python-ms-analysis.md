@@ -167,12 +167,12 @@ dda_ms2
      ... 37 more variables/columns.
 
     file(s):
-    4a42c8d4325_7861
+    49d1f6bfcfa_7861
     Processing:
-     Filter: select MS level(s) 2 [Tue May 26 14:41:29 2026]
-     Merge 1 Spectra into one [Tue May 26 14:41:29 2026] 
+     Filter: select MS level(s) 2 [Wed May 27 09:08:26 2026]
+     Merge 1 Spectra into one [Wed May 27 09:08:26 2026] 
 
-🔎 Visualize the results:
+🔎 visualize the results:
 
 - plot EIC of first chromatographic peak
 - indicate the MS2 spectra measured for that peak (if any)
@@ -641,7 +641,7 @@ grid()
 Figure 7: Comparison of normalized dot product (x-axis) and modified
 cosine (y-axis) similarity scores.
 
-👉 The modified cosine similarity yields higher scores than the
+👉 the modified cosine similarity yields higher scores than the
 normalized dot product (*regular* cosine similarity).
 
 🔎 inspect spectra with high modified cosine scores, but low normalized
