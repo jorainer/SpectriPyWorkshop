@@ -1,6 +1,6 @@
 Package: SpectriPyWorkshop
 Title: Criss-crossing R and Python for Powerful MS Data Analysis Workflows
-Version: 1.0.1
+Version: 1.0.2
 Authors@R:
      person(given = "Johannes", family = "Rainer",
             email = "Johannes.Rainer@eurac.edu",
@@ -13,9 +13,8 @@ Description:
     takes care of translating the MS data structures from the two programming
     languages enabling the use of the functions from both in their respective
     native environments.
-License: Artistic-2.0
+License: CC BY-NC-SA 4.0
 Encoding: UTF-8
-LazyData: false
 Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 4.6),

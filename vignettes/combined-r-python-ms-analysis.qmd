@@ -9,7 +9,7 @@ vignette: >
   %\VignetteKeywords{Mass Spectrometry, MS, MSMS, Metabolomics, Infrastructure, Quantitative}
   %\VignettePackage{SpectriPyWorkshop}
   %\VignetteEngine{quarto::html}
-  %\VignetteDepends{SpectriPy,pander,reticulate,Spectra,MsExperiment,xcms,mzR,MsDataHub,pheatmap,matrixStats,BiocStyle}
+  %\VignetteDepends{SpectriPy,reticulate,Spectra,MsExperiment,xcms,mzR,MsDataHub,pheatmap,matrixStats,BiocStyle}
 ---
 
 # Outline

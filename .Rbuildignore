@@ -29,3 +29,4 @@ tres.h5
 .dockerignore
 mgf$
 vignettes/*_files/*
+^LICENSE\.md$

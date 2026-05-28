@@ -1,5 +1,9 @@
 # *SpectriPy* Workshop 1.0
 
+## Changes in version 1.0.2
+
+- Update license.
+
 ## Changes in version 1.0.1
 
 - Change the tag for the docker image from *latest* to *RELEASE_3_23*.
