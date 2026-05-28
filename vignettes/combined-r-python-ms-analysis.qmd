@@ -92,8 +92,8 @@ dda_data <- readMsExperiment(dda_file)
 ```
 
 ::: {.callout-note appearance = "minimal"}
-ℹ️ for more information on general MS data handling and
-exploration see also the respective tutorials in 👩‍🚀
+ℹ️ for more information on general MS data handling and exploration see also the
+respective tutorials in 👩‍🚀
 [Metabonaut](https://rformassspectrometry.github.io/Metabonaut/)
 :::
 

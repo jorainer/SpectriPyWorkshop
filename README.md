@@ -70,7 +70,6 @@ We strive for **reproducibility**. This workflows is designed to
 remain stable over time, allowing you to run the vignette also in future.
 
 -   **Major updates** will be documented here.
--   **Minor updates** can be found in the [NEWS.md](NEWS.md)
 
 ---
 
