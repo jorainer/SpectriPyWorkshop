@@ -1,7 +1,7 @@
 # SpectriPy: Criss-Crossing R and Python for Powerful Mass Spectrometry Data Analysis Workflows
 
-[![License: CC BY-NC
-4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![License: CC BY-NC-SA
+4.0](http://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 ![docker
 pulls](https://img.shields.io/docker/pulls/jorainer/spectripyworkshop)[![Docker
 Image Version (latest by
@@ -74,8 +74,6 @@ We strive for **reproducibility**. This workflows is designed to remain
 stable over time, allowing you to run the vignette also in future.
 
 - **Major updates** will be documented here.
-- **Minor updates** can be found in the
-  [NEWS.md](https://jorainer.github.io/SpectriPyWorkshop/NEWS.md)
 
 ------------------------------------------------------------------------
 
